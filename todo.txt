@@ -1,0 +1,10 @@
+* Correction de la page login pour les admins : 
+   -> Remplacement des values : 
+         email: e.target.querySelector(`input[data-testid="employee-email-input"]`).value,
+         password: e.target.querySelector(`input[data-testid="employee-password-input"]`).value,
+
+      par ->
+
+         email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,
+         password: e.target.querySelector(`input[data-testid="admin-password-input"]`).value,
+
