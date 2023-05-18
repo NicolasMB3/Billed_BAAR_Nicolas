@@ -34,7 +34,6 @@ export default class NewBill {
       errorMsg.style.color = "red"
       fileInput.parentNode.insertBefore(errorMsg, fileInput.nextSibling);
       fileInput.value = '';
-      console.log("error")
       return;
     } else {
       const errorMsg = document.querySelector('.error-message');
