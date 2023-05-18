@@ -124,7 +124,7 @@ describe("Given I am connected as an Employee", () => {
       const nameField = screen.getByTestId("expense-name");
       userEvent.type(nameField, "Transports");
       const dateField = screen.getByTestId("datepicker");
-      userEvent.type(dateField, "2020-01-05");
+      userEvent.type(dateField, "2021-02-09");
       const amountField = screen.getByTestId("amount");
       userEvent.type(amountField, "1000");
       const pctField = screen.getByTestId("pct");
@@ -132,7 +132,7 @@ describe("Given I am connected as an Employee", () => {
       const commentaryField = screen.getByTestId("commentary");
       userEvent.type(commentaryField, "Un commentaire");
       const proofField = screen.getByTestId("file");
-      userEvent.upload(proofField, new File(['test.png'], "test.png", { type: "png" }));
+      userEvent.upload(proofField, new File(['image_exemple.png'], "image_exemple.png", { type: "png" }));
 
       const submitBill = jest.fn(newBill.handleSubmit);
       const newBillForm = screen.getByTestId("form-new-bill");
@@ -170,7 +170,7 @@ describe("When an error occurs on API", () => {
   })
 
   // Test : Vérifie que de l'affichage d'un message d'erreur 404 lors de la récupération des factures depuis l'API
-  test("Fetches bills from an API and fails with 404 message error", async () => {
+  test("Fetch bills from an API and fails with 404 message error", async () => {
     // Simulation d'une erreur 404 lors de la récupération des factures
     mockStore.bills.mockImplementationOnce(() => {
       return {

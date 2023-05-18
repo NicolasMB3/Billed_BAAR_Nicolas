@@ -91,6 +91,9 @@ dist
 # vuepress build output
 .vuepress/dist
 
+# Remove back files
+Billed-app-FR-Back/
+
 # Serverless directories
 .serverless/
 
