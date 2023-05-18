@@ -150,7 +150,6 @@ describe('Given I am connected as an Admin', () => {
     })
   })
 
-
   describe('When I am on Dashboard and there are no bills', () => {
     test('Then, no cards should be shown', () => {
       document.body.innerHTML = cards([])
