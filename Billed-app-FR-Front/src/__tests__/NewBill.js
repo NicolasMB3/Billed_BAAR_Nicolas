@@ -2,9 +2,11 @@
  * @jest-environment jsdom
 */
 
-import { fireEvent, screen, waitFor } from "@testing-library/dom";
+import { screen, waitFor } from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
+import BillsUI from "../views/BillsUI.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
@@ -57,11 +59,7 @@ describe("Given I am connected as an employee", () => {
       const input = screen.getByTestId("file");
 
       input.addEventListener("change", handleChangeFile);
-      fireEvent.change(input, {
-        target: {
-          files: [new File(["test"], "test.png", { type: "image/png" })]
-        }
-      });
+      userEvent.upload(input, new File(["test"], "test.png", { type: "image/png" }));
 
       expect(input.files[0].name).toBe("test.png");
       expect(input.files[0].type).toBe("image/png");
@@ -72,22 +70,20 @@ describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page and I add a file with invalid format", () => {
     test("Then an error message is displayed", () => {
       document.body.innerHTML = NewBillUI();
+
       const handleChangeFile = jest.fn(newBillContainer.handleChangeFile);
       const input = screen.getByTestId("file");
+
       input.addEventListener("change", handleChangeFile);
-      fireEvent.change(input, {
-        target: {
-          files: [new File(["test"], "video.mp4", { type: "media/mp4" })]
-        }
-      });
+      userEvent.upload(input, new File(["test"], "video.mp4", { type: "media/mp4" }));
+
       expect(handleChangeFile).toHaveBeenCalled();
       expect(screen.getByText("Le fichier doit être de type .jpg, .jpeg ou .png")).toBeTruthy();
     });
   });
-
 });
 
-//test d'integration POST
+// Test d'integration POST
 describe("Given I am connected as an Employee", () => {
   let root;
 
@@ -111,29 +107,77 @@ describe("Given I am connected as an Employee", () => {
       });
 
       const nameField = screen.getByTestId("expense-name");
-      fireEvent.change(nameField, { target: { value: "Transports" } });
+      userEvent.type(nameField, "Transports");
       const dateField = screen.getByTestId("datepicker");
-      fireEvent.change(dateField, { target: { value: "2020-01-05" } });
+      userEvent.type(dateField, "2020-01-05");
       const amountField = screen.getByTestId("amount");
-      fireEvent.change(amountField, { target: { value: 1000 } });
+      userEvent.type(amountField, "1000");
       const pctField = screen.getByTestId("pct");
-      fireEvent.change(pctField, { target: { value: 20 } });
+      userEvent.type(pctField, "20");
       const commentaryField = screen.getByTestId("commentary");
-      fireEvent.change(commentaryField, { target: { value: "et voila" } });
+      userEvent.type(commentaryField, "et voila");
       const proofField = screen.getByTestId("file");
-      fireEvent.change(proofField, {
-        target: {
-          files: [new File(['test.png'], "test.png", { type: "png" })],
-        },
-      });
+      userEvent.upload(proofField, new File(['test.png'], "test.png", { type: "png" }));      
 
       const submitBill = jest.fn(newBill.handleSubmit);
       const newBillForm = screen.getByTestId("form-new-bill");
       newBillForm.addEventListener("submit", submitBill);
-      fireEvent.submit(newBillForm);
+      userEvent.click(screen.getByText('Envoyer'));
 
       expect(submitBill).toHaveBeenCalled();
       expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
     });
   });
 });
+
+describe("When an error occurs on API", () => {
+  beforeEach(() => {
+      jest.spyOn(mockStore, "bills")
+      Object.defineProperty(
+          window,
+          'localStorage', {
+              value: localStorageMock
+          }
+      )
+      window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee',
+          email: "a@a"
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.appendChild(root)
+      router()
+  })
+
+  test("Fetches bills from an API and fails with 404 message error", async () => {
+    mockStore.bills.mockImplementationOnce(() => {
+      return {
+        list: () => {
+            return Promise.reject(new Error("Erreur 404"))
+        }
+      }
+    })
+    document.body.innerHTML = BillsUI({
+        error: 'Erreur 404'
+    })
+    await new Promise(process.nextTick)
+    const message = await screen.getByText(/Erreur 404/)
+    expect(message).toBeTruthy()
+  })
+
+  test("fetches messages from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+              return Promise.reject(new Error("Erreur 500"))
+          }
+        }
+      })
+      document.body.innerHTML = BillsUI({
+        error: 'Erreur 500'
+      })
+      await new Promise(process.nextTick)
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+  })
+})
