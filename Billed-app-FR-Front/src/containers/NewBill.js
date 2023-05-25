@@ -30,7 +30,7 @@ export default class NewBill {
     if (!fileName.endsWith(".jpg") && !fileName.endsWith(".jpeg") && !fileName.endsWith(".png")) {
       const errorMsg = document.createElement('div');
       errorMsg.classList.add('error-message');
-      errorMsg.textContent = "Le fichier doit être de type .jpg, .jpeg ou .png";
+      errorMsg.textContent = "Format incorrect : Merci de choisir un fichier .jpg, .jpeg ou .png";
       errorMsg.style.color = "red"
       fileInput.parentNode.insertBefore(errorMsg, fileInput.nextSibling);
       fileInput.value = '';

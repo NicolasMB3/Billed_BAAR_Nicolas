@@ -89,7 +89,7 @@ describe("Given I am connected as an employee", () => {
       // Vérifier que la fonction handleChangeFile a été appelée
       expect(handleChangeFile).toHaveBeenCalled();
       // Vérifier que le message d'erreur approprié est affiché à l'écran
-      expect(screen.getByText("Le fichier doit être de type .jpg, .jpeg ou .png")).toBeTruthy();
+      expect(screen.getByText("Format incorrect : Merci de choisir un fichier .jpg, .jpeg ou .png")).toBeTruthy();
     });
   });
 });
