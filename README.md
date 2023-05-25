@@ -27,6 +27,7 @@ Liste de tous les langages utilisés pour la création du site :
 - [HTML](https://developer.mozilla.org/fr/docs/Web/HTML)
 - [CSS](https://developer.mozilla.org/fr/docs/Web/CSS)
 - [JS](https://developer.mozilla.org/fr/docs/Web/JavaScript)
+- [Jest](https://jestjs.io/fr/)
 
 ## Contacts
 
