@@ -146,11 +146,11 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      // .off() remove an event handler.
+      $(`#open-bill${bill.id}`).off().click((e) => this.handleEditTicket(e, bill, bills))
     })
 
     return bills
-
   }
 
   getBillsAllUsers = () => {
